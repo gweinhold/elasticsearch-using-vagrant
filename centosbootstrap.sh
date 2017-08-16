@@ -1,35 +1,53 @@
 #!/bin/bash
 
+sudo echo 'http_proxy=http://<proxy>:80' >> ~/.bashrc
+sudo echo 'https_proxy=http://<proxy>:80' >> ~/.bashrc
+export http_proxy
+export https_proxy
+
+# add EPEL repository to yum
+sudo yum -q -y install epel-release
+
+# refresh repolist
+sudo yum repolist
+
+# install nano
+sudo yum -y install nano
+
+# install screen
+sudo yum -y install screen
+
+# install htop
+sudo yum -y install htop
+
 # install wget for the next action
 sudo yum -y install wget
 
 # download Java
-wget --no-cookies --no-check-certificate --header "Cookie: gpw_e24=http%3A%2F%2Fwww.oracle.com%2F; oraclelicense=accept-securebackup-cookie" "http://download.oracle.com/otn-pub/java/jdk/8u73-b02/jdk-8u73-linux-x64.rpm"
+wget -nv --no-cookies --no-check-certificate --header "Cookie: gpw_e24=http%3A%2F%2Fwww.oracle.com%2F; oraclelicense=accept-securebackup-cookie" "http://download.oracle.com/otn-pub/java/jdk/8u131-b11/d54c1d3a095b4ff2b6607d096fa80163/jdk-8u131-linux-x64.rpm"
 
 # install Java
-sudo yum -y localinstall jdk-8u73-linux-x64.rpm
+yum -y localinstall jdk-8u131-linux-x64.rpm
+
+# delete java install
+rm jdk-8u131-linux-x64.rpm
 
 # elasticsearch GPG key
 sudo rpm --import http://packages.elastic.co/GPG-KEY-elasticsearch
 
-# create the elasticsearch yum repo
-echo '[elasticsearch-2.x]
-name=Elasticsearch repository for 2.x packages
-baseurl=http://packages.elastic.co/elasticsearch/2.x/centos
-gpgcheck=1
-gpgkey=http://packages.elastic.co/GPG-KEY-elasticsearch
-enabled=1' | sudo tee /etc/yum.repos.d/elasticsearch.repo
+# download ElasticSearch 5.5
+wget -nv --no-check-certificate https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-5.5.0.rpm
 
-# install elasticsearch
-sudo yum -y install elasticsearch
+# install ElasticSearch 5.5
+rpm --install elasticsearch-5.5.0.rpm
 
-# start elasticsearch on boot
-#if using System V (check with ps -p 1)
-    sudo chkconfig elasticsearch on
-#elseif using systemd
-#    sudo /bin/systemctl daemon-reload
-#    sudo /bin/systemctl enable elasticsearch.service
-#fi
+# cleanup ElasticSearch install
+rm elasticsearch-5.5.0.rpm
+
+# Reload systemd manager configuration & start ElasticSearch
+sudo systemctl daemon-reload
+sudo systemctl enable elasticsearch.service
+sudo systemctl start elasticsearch.service
 
 # allow host OS to access through port forwarding
 sudo echo "
@@ -38,21 +56,16 @@ network.host: 0.0.0.0" >> /etc/elasticsearch/elasticsearch.yml
 sudo sed -i -e '$a\' /etc/elasticsearch/elasticsearch.yml
 sudo sed -i -e '$a\' /etc/elasticsearch/elasticsearch.yml
 
-# create the kibana repo
-echo '[kibana-4.5]
-name=Kibana repository for 4.5.x packages
-baseurl=http://packages.elastic.co/kibana/4.5/centos
-gpgcheck=1
-gpgkey=http://packages.elastic.co/GPG-KEY-elasticsearch
-enabled=1' | sudo tee /etc/yum.repos.d/kibana.repo
+# download kibana
+wget -nv --no-check-certificate https://artifacts.elastic.co/downloads/kibana/kibana-5.5.0-x86_64.rpm
 
 # install kibana
-sudo yum -y install kibana
+sudo rpm --install kibana-5.5.0-x86_64.rpm
 
-#start kibana on boot
-#if using System V (check with ps -p 1)
-    sudo chkconfig --add kibana
-#elseif using systemd
-#    sudo /bin/systemctl daemon-reload
-#    sudo /bin/systemctl enable kibana.service
-#fi
+# cleanup kibana install
+rm kibana-5.5.0-x86_64.rpm
+
+# Reload systemd manager configuration & start kibana
+sudo systemctl daemon-reload
+sudo systemctl enable kibana
+sudo systemctl start kibana
