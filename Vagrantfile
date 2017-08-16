@@ -2,7 +2,8 @@ VAGRANTFILE_API_VERSION = "2"
 Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
 
     config.ssh.forward_agent = true
-
+    config.vm.synced_folder ".", "/vagrant", disabled: true
+    
     config.vm.provider :virtualbox do |v|
         v.customize ["modifyvm", :id, "--memory", 1536]
         v.customize ["modifyvm", :id, "--natdnshostresolver1", "on"]

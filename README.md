@@ -22,10 +22,7 @@ $ cd vm-elastic && vagrant up centos
 ## Usage
 After installing the ElasticSearch server, you'll be able to head over to [http://localhost:9200/](http://localhost:9200/) to check the current ElasticSearch information.
 
-A few plugins have been installed for you:
+* Kibana ([http://localhost:5601/](http://localhost:5601/)) has been installed.
 
-* Kibana ([http://localhost:5601/](http://localhost:5601/))
-* Head ([http://localhost:9200/_plugin/head](http://localhost:9200/_plugin/head/))
-* HQ ([http://localhost:9200/_plugin/hq](http://localhost:9200/_plugin/hq/))
-* Marvel ([http://localhost:5601/app/marvel](http://localhost:5601/app/marvel))
-* Sense ([http://localhost:5601/app/sense](http://localhost:5601/app/sense))
+## Plugins
+* Plugins since ElasticSearch 5.0 are deprecated.  Kibana plugins are available instead.
