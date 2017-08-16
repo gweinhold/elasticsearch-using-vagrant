@@ -50,11 +50,8 @@ sudo systemctl enable elasticsearch.service
 sudo systemctl start elasticsearch.service
 
 # allow host OS to access through port forwarding
-sudo echo "
-network.bind_host: 0
-network.host: 0.0.0.0" >> /etc/elasticsearch/elasticsearch.yml
-sudo sed -i -e '$a\' /etc/elasticsearch/elasticsearch.yml
-sudo sed -i -e '$a\' /etc/elasticsearch/elasticsearch.yml
+echo 'network.bind_host: 0' | sudo tee --append /etc/elasticsearch/elasticsearch.yml
+echo 'network.host: 0.0.0.0' | sudo tee --append /etc/elasticsearch/elasticsearch.yml
 
 # download kibana
 wget -nv --no-check-certificate https://artifacts.elastic.co/downloads/kibana/kibana-5.5.0-x86_64.rpm
@@ -64,6 +61,8 @@ sudo rpm --install kibana-5.5.0-x86_64.rpm
 
 # cleanup kibana install
 rm kibana-5.5.0-x86_64.rpm
+
+echo 'server.host: "0.0.0.0"' | sudo tee --append /etc/kibana/kibana.yml
 
 # Reload systemd manager configuration & start kibana
 sudo systemctl daemon-reload

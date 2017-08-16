@@ -18,4 +18,4 @@ After installing the ElasticSearch server, you'll be able to head over to [http:
 * Kibana ([http://localhost:5603/](http://localhost:5603/)) has been installed.
 
 ## Plugins
-* Plugins since ElasticSearch 5.0 are deprecated.  Kibana plugins are available instead.
+* Plugins since ElasticSearch 5.0 are deprecated.  Kibana [plugins](https://www.elastic.co/guide/en/kibana/current/known-plugins.html) are available instead.
